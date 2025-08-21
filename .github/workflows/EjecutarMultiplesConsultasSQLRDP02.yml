@@ -11,23 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout transpiled branch
         uses: actions/checkout@v3
+        with:
+          ref: transpilado  # Usar rama con código JavaScript transpilado
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install ts-node
-        run: npm install -g ts-node typescript
-
+          node-version: "22"
+          
+      # ¡NO INSTALAMOS NADA! Los node_modules ya están en la rama transpilada
+          
       - name: Execute database replication
-        run: ts-node ./src/jobs/replications/ReplicateToRDP02Instances.ts
+        run: node ./jobs/replications/ReplicateToRDP02Instances.js
         env:
           # Parámetros del evento
           SQL_QUERY: ${{ github.event.client_payload.sql }}
